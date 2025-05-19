@@ -1,0 +1,36 @@
+name My Artifact Workflow
+
+on
+  push
+    branches
+      - main
+
+jobs
+  build
+    runs-on ubuntu-latest
+    steps
+      - name Checkout code
+        uses actionscheckout@v3
+
+      - name Create artifact file
+        run 
+          mkdir -p output
+          echo This is a test artifact file.  outputtest.txt
+
+      - name Upload artifact
+        uses actionsupload-artifact@v3
+        with
+          name test-artifact
+          path outputtest.txt
+
+  process
+    runs-on ubuntu-latest
+    needs build
+    steps
+      - name Download artifact
+        uses actionsdownload-artifact@v3
+        with
+          name test-artifact
+
+      - name Show artifact contents
+        run cat test.txt
